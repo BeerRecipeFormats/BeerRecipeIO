@@ -31,14 +31,14 @@ public protocol BeerRecipeDecoder {
   /// - Parameters:
   ///   - url: The URL of the recipe
   /// - Returns: The recipe
-  func decode(url: URL) async -> Result<BeerRecipe, Error>
+  func decode(url: URL) async -> Result<[BeerRecipe], Error>
   
   /// Parse the recipe form the data and return it.
   ///
   /// - Parameters:
   ///   - data: The recipe data with the recipe
   /// - Returns: The recipe
-  func decode(data: Data) -> Result<BeerRecipe, Error>
+  func decode(data: Data) -> Result<[BeerRecipe], Error>
   
   /// Parse the recipe form the string and return it.
   /// A default implementation exists for this method.
@@ -46,13 +46,13 @@ public protocol BeerRecipeDecoder {
   /// - Parameters:
   ///   - string: The recipe with the recipe
   /// - Returns: The recipe
-  func decode(string: String) -> Result<BeerRecipe, Error>
+  func decode(string: String) -> Result<[BeerRecipe], Error>
 }
 
 public extension BeerRecipeDecoder {
   
   @available(swift 5.5)
-  func decode(url: URL) async -> Result<BeerRecipe, Error> {
+  func decode(url: URL) async -> Result<[BeerRecipe], Error> {
     do {
       let (data, _) = try await URLSession.shared.data(from: url)
       
@@ -62,7 +62,7 @@ public extension BeerRecipeDecoder {
     }
   }
   
-  func decode(string: String) -> Result<BeerRecipe, Error> {
+  func decode(string: String) -> Result<[BeerRecipe], Error> {
     return decode(data: string.data(using: .utf8)!)
   }
 }
