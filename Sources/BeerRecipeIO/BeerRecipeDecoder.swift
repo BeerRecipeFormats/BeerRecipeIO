@@ -33,6 +33,15 @@ public protocol BeerRecipeDecoder {
   /// - Returns: The recipe
   func decode(url: URL) async -> Result<[BeerRecipe], Error>
   
+  /// Read the contents from the given URL, parse the recipe and return it.
+  /// A default implementation exists for this method. This method is working
+  /// synchronously
+  ///
+  /// - Parameters:
+  ///   - url: The URL of the recipe
+  /// - Returns: The recipe
+  func decodeSync(url: URL) -> Result<[BeerRecipe], Error>
+  
   /// Parse the recipe form the data and return it.
   ///
   /// - Parameters:
@@ -60,6 +69,26 @@ public extension BeerRecipeDecoder {
     } catch {
       return Result.failure(error)
     }
+  }
+  
+  func decodeSync(url: URL) -> Result<[BeerRecipe], Error> {
+    let semaphore = DispatchSemaphore(value: 0)
+    var result: Result<[BeerRecipe], Error>?
+    
+    let task = URLSession.shared.dataTask(with: url) {(data, response, error) in
+      guard error != nil else {
+        result = Result.failure(error!)
+        semaphore.signal()
+        return
+      }
+      
+      result = decode(data: data!)
+      semaphore.signal()
+    }
+    
+    task.resume()
+    semaphore.wait()
+    return result!
   }
   
   func decode(string: String) -> Result<[BeerRecipe], Error> {
