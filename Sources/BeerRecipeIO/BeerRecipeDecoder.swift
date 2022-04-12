@@ -76,7 +76,7 @@ public extension BeerRecipeDecoder {
     var result: Result<[BeerRecipe], Error>?
     
     let task = URLSession.shared.dataTask(with: url) {(data, response, error) in
-      guard error != nil else {
+      guard error == nil else {
         result = Result.failure(error!)
         semaphore.signal()
         return
