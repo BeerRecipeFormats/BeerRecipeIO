@@ -23,5 +23,5 @@ import Foundation
 import Swime
 
 public protocol BeerRecipeEncoder {
-  func encode() -> (Data, MimeType)
+  func encode() -> Data
 }
