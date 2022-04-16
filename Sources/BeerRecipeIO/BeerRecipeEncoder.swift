@@ -20,7 +20,6 @@
 
 import AbstractBeerRecipe
 import Foundation
-import Swime
 
 public protocol BeerRecipeEncoder {
   func encode() -> Data
